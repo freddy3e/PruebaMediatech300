@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Bar Chart</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+</head>
+
+<body>
+    <input id="upload" type="file">
+    <canvas id="Chart1" width="400" height="200"></canvas>
+    <canvas id="Chart2" width="400" height="200"></canvas>
+    <script>
+        
+        function upload(e) {
+            var data = null;
+            var file = e.target.files[0];
+
+            var reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = function (event) {
+                var csvData = event.target.result;
+
+                var parsedCSV = d3. dsvFormat(";").parseRows(csvData);
+                console.log(parsedCSV);
+                calculateChart1(parsedCSV);
+                calculateChart2(parsedCSV);
+            }
+        }
+
+        function calculateChart1(data){
+            const sexColumn = data[0].indexOf('Sex');
+            const survivedColumn = data[0].indexOf('Survived');
+
+            var survivedMen = 0;
+            var notSurvivedMen = 0;
+            var survivedWomen = 0;
+            var notSurvivedWomen = 0;
+
+            data.forEach(function (d, i) {
+                if(i != 0){
+                    if(d[sexColumn]==="male" && d[survivedColumn] === "Yes"){
+                        survivedMen += 1;
+                    }else if(d[sexColumn]==="female" && d[survivedColumn] === "Yes"){
+                        survivedWomen += 1;
+                    }else if(d[sexColumn]=="male" && d[survivedColumn] === "No"){
+                        notSurvivedMen += 1;
+                    }else if(d[sexColumn]==="female" && d[survivedColumn] === "No"){
+                        notSurvivedWomen += 1;
+                    }
+
+                }
+            });
+
+            console.log(survivedMen, survivedWomen, notSurvivedMen, notSurvivedWomen);
+
+            var myChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Sobrevivientes - Hombres', 'No sobrevivientes - Hombres', 'Sobrevientes - Mujeres', 'No sobrevientes - Mujeres'],
+                    datasets: [{
+                        label: 'Sobrevivientes - Género',
+                        data: [survivedMen, notSurvivedMen, survivedWomen, notSurvivedWomen],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+            
+        }
+
+        function calculateChart2(data){
+            const pclassColumn = data[0].indexOf('Pclass');
+            const survivedColumn = data[0].indexOf('Survived');
+
+            var survivedC1 = 0;
+            var survivedC2 = 0;
+            var survivedC3 = 0;
+            var notSurvivedC1 = 0;
+            var notSurvivedC2 = 0;
+            var notSurvivedC3 = 0;
+
+            data.forEach(function (d, i) {
+                if(i != 0){
+                    if(i != 0){
+                    if(d[pclassColumn]==="1" && d[survivedColumn] === "Yes"){
+                        survivedC1 += 1;
+                    }else if(d[pclassColumn]==="2" && d[survivedColumn] === "Yes"){
+                        survivedC2 += 1;
+                    }else if(d[pclassColumn]=="3" && d[survivedColumn] === "Yes"){
+                        survivedC3 += 1;
+                    }else if(d[pclassColumn]==="1" && d[survivedColumn] === "No"){
+                        notSurvivedC1 += 1;
+                    }else if(d[pclassColumn]==="2" && d[survivedColumn] === "No"){
+                        notSurvivedC2 += 1;
+                    }else if(d[pclassColumn]==="3" && d[survivedColumn] === "No"){
+                        notSurvivedC3 += 1;
+                    }
+                }
+                }
+            });
+
+            var myChart2 = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Sobrevivientes - C1', 'No sobrevivientes - C1', 'Sobrevivientes - C2', 'No sobrevientes - C2', 'Sobrevientes - C3', 'No sobrevientes - C3'],
+                    datasets: [{
+                        label: 'Sobrevivientes - Clase',
+                        data: [survivedC1, notSurvivedC1, survivedC1, notSurvivedC2, survivedC3, notSurvivedC3],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+            
+            
+        }
+
+    document.getElementById("upload").addEventListener("change", upload, false);
+    var ctx1 = document.getElementById('Chart1').getContext('2d');
+    var ctx2 = document.getElementById('Chart2').getContext('2d');
+    
+    </script>
+	
+</body>
+
+</html>
